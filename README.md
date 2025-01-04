@@ -1,1 +1,3 @@
-# packer-ami-aws
+## packer-ami-aws
+
+`packer init .`
