@@ -1,0 +1,62 @@
+{
+    "_comment" : "Create an AWS image with ubuntu along with Java and Tomcat packages",
+    "variables": {
+      "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+      "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+      "region": "{{env `AWS_DEFAULT_REGION`}}",
+      "source_ami": "{{user `source_ami`}}",
+      "instance_type": "t2.micro",
+      "vpc_id": "{{user `vpc_id`}}",
+      "subnet_id": "{{user `subnet_id`}}"
+    },
+    "_comment1" : "packer build -var \"aws_secret_key=foo\" template.json",
+    "_comment2" : "packer build -var-file packer-vars.json template.json",
+    "builders": [{
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "{{user `region`}}",
+      "source_ami": "{{user `source_ami`}}",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "Avinash-Build-{{isotime | clean_resource_name}}",
+      "vpc_id": "{{user `vpc_id`}}",
+      "subnet_id": "{{user `subnet_id`}}",
+      "security_group_id": "{{user `security_group_id`}}",
+      "associate_public_ip_address": true,
+      "tags": {
+        "Name": "Avinash-Build-{{isotime | clean_resource_name}}"
+      }
+    }],
+    "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo apt update -y",
+        "sudo apt install nginx -y",
+        "sudo apt install git -y",
+        "sudo git clone https://github.com/guycalledavinash/webhook-testing.git",
+        "sudo rm -rf /var/www/html/index.nginx-debian.html",
+        "sudo cp webhook-testing/index.html /var/www/html/index.nginx-debian.html",
+        "sudo cp webhook-testing/style.css /var/www/html/style.css",
+        "sudo cp webhook-testing/scorekeeper.js /var/www/html/scorekeeper.js",
+        "sudo service nginx start",
+        "sudo systemctl enable nginx",
+        "curl https://get.docker.com | bash"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "docker.service",
+      "destination": "/tmp/docker.service"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo cp /tmp/docker.service /lib/systemd/system/docker.service",
+        "sudo usermod -a -G docker ubuntu",
+        "sudo systemctl daemon-reload",
+        "sudo service docker restart"
+      ]
+    }]
+}

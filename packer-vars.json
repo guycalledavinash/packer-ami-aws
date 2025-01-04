@@ -1,0 +1,7 @@
+{
+"ami_name": "ami-0000",
+"vpc_id": "vpc-0e4e9000",
+"subnet_id": "subnet-0dcf000",
+"source_ami": "ami-036841078a4b68e14",
+"security_group_id": "sg-0039676d620018b40"
+}
