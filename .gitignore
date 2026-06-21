@@ -1,1 +1,17 @@
-packer.exe
+# Packer
+.packer.d/
+packer_cache/
+crash.log
+crash.*.log
+
+# Local variable files may contain account-specific infrastructure IDs or secrets.
+*.auto.pkrvars.hcl
+*.pkrvars.hcl
+!packer-vars.example.hcl
+packer-vars.json
+
+# OS/editor noise
+.DS_Store
+*.swp
+.vscode/
+.idea/
