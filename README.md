@@ -8,6 +8,8 @@ Build an Ubuntu Amazon Machine Image (AMI) with:
 
 The template is written in Packer HCL2 (`packer.hcl`) and uses separate variable definitions plus a reusable provisioning script for maintainability.
 
+Packer automatically selects the most recent official Canonical Ubuntu 22.04 LTS (Jammy) amd64 AMI in the configured AWS region. The lookup is limited to Canonical's AWS owner account and EBS-backed HVM Ubuntu server images, so you do not need to find or maintain a `source_ami` ID.
+
 ## Prerequisites
 
 - [Packer](https://developer.hashicorp.com/packer) 1.8 or newer
@@ -31,13 +33,23 @@ cp packer-vars.example.hcl packer-vars.pkrvars.hcl
 
 ```hcl
 region            = "us-east-1"
-source_ami        = "ami-0123456789abcdef0"
 vpc_id            = "vpc-0123456789abcdef0"
 subnet_id         = "subnet-0123456789abcdef0"
 security_group_id = "sg-0123456789abcdef0"
 ```
 
 `packer-vars.pkrvars.hcl` is ignored by Git so local infrastructure values are not committed accidentally.
+
+### Ubuntu source selection
+
+The default source is Canonical's latest Jammy 22.04 amd64 server AMI. To select another supported Canonical Ubuntu release or architecture, add these optional settings to your variable file:
+
+```hcl
+# ubuntu_release      = "jammy-22.04"
+# ubuntu_architecture = "amd64"
+```
+
+`ubuntu_release` follows Canonical's AMI naming format (for example, `noble-24.04`), and `ubuntu_architecture` must be `amd64` or `arm64`. If you choose `arm64`, use an ARM-compatible build instance type such as `t4g.micro`.
 
 ## Build the AMI
 
