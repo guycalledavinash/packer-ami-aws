@@ -20,10 +20,22 @@ source "amazon-ebs" "ubuntu_web" {
   instance_type               = var.instance_type
   region                      = var.region
   security_group_id           = var.security_group_id
-  source_ami                  = var.source_ami
   ssh_username                = var.ssh_username
   subnet_id                   = var.subnet_id
   vpc_id                      = var.vpc_id
+
+  # Canonical publishes Ubuntu AMIs with this name pattern in every AWS region.
+  # Limiting the owner and image characteristics prevents an unrelated AMI from
+  # being selected when Packer resolves the most recent matching image.
+  source_ami_filter {
+    filters = {
+      name                = "ubuntu/images/*/ubuntu-${var.ubuntu_release}-${var.ubuntu_architecture}-server-*"
+      root-device-type    = "ebs"
+      virtualization-type = "hvm"
+    }
+    most_recent = true
+    owners      = ["099720109477"] # Canonical
+  }
 
   tags = {
     Name        = local.ami_name

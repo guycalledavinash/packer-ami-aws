@@ -4,9 +4,26 @@ variable "region" {
   default     = env("AWS_DEFAULT_REGION")
 }
 
-variable "source_ami" {
+variable "ubuntu_release" {
   type        = string
-  description = "Ubuntu source AMI ID to use as the base image."
+  description = "Ubuntu release identifier used in Canonical AMI names."
+  default     = "jammy-22.04"
+
+  validation {
+    condition     = can(regex("^[a-z]+-[0-9]+\\.[0-9]+$", var.ubuntu_release))
+    error_message = "Ubuntu release must use Canonical's release format, for example jammy-22.04."
+  }
+}
+
+variable "ubuntu_architecture" {
+  type        = string
+  description = "Ubuntu AMI architecture identifier used in Canonical AMI names."
+  default     = "amd64"
+
+  validation {
+    condition     = contains(["amd64", "arm64"], var.ubuntu_architecture)
+    error_message = "Ubuntu architecture must be either amd64 or arm64."
+  }
 }
 
 variable "vpc_id" {
