@@ -11,7 +11,7 @@ variable "ubuntu_release" {
 
   validation {
     condition     = can(regex("^[a-z]+-[0-9]+\\.[0-9]+$", var.ubuntu_release))
-    error_message = "ubuntu_release must use Canonical's release format, for example jammy-22.04."
+    error_message = "Ubuntu release must use Canonical's release format, for example jammy-22.04."
   }
 }
 
@@ -22,7 +22,7 @@ variable "ubuntu_architecture" {
 
   validation {
     condition     = contains(["amd64", "arm64"], var.ubuntu_architecture)
-    error_message = "ubuntu_architecture must be either amd64 or arm64."
+    error_message = "Ubuntu architecture must be either amd64 or arm64."
   }
 }
 
