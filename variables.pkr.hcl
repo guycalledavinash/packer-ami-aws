@@ -65,6 +65,12 @@ variable "web_content_repo" {
   default     = "https://github.com/guycalledavinash/webhook-testing.git"
 }
 
+variable "web_content_ref" {
+  type        = string
+  description = "Branch, tag, or other Git ref to clone from the web content repository."
+  default     = "main"
+}
+
 variable "web_root" {
   type        = string
   description = "Destination directory served by nginx."

@@ -74,16 +74,19 @@ packer build -var-file=packer-vars.pkrvars.hcl .
 
 ## Customizing the web content
 
-By default, the AMI copies `index.html`, `style.css`, and `scorekeeper.js` from `https://github.com/guycalledavinash/webhook-testing.git` into `/var/www/html`.
+By default, the AMI copies `index.html`, `style.css`, and `scorekeeper.js` from the explicit `main` ref of `https://github.com/guycalledavinash/webhook-testing.git` into `/var/www/html`.
 
-Override the content repository at build time:
+Override the content repository and ref at build time:
 
 ```bash
 packer build \
   -var-file=packer-vars.pkrvars.hcl \
   -var='web_content_repo=https://github.com/example/my-static-site.git' \
+  -var='web_content_ref=v1.2.3' \
   .
 ```
+
+`web_content_ref` can be a branch, tag, or other Git ref. Use an immutable tag or commit SHA for production builds: pinning the exact content revision ensures later commits to the repository do not change the files baked into an AMI rebuilt from the same Packer configuration.
 
 The repository must contain `index.html`, `style.css`, and `scorekeeper.js` at its root.
 

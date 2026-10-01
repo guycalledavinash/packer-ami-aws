@@ -51,6 +51,7 @@ build {
   provisioner "shell" {
     environment_vars = [
       "WEB_CONTENT_REPO=${var.web_content_repo}",
+      "WEB_CONTENT_REF=${var.web_content_ref}",
       "WEB_ROOT=${var.web_root}",
     ]
 
